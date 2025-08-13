@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilates Harmony - Reserva de Turnos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #8B5FBF;
+            --secondary: #D1C4E9;
+            --accent: #FFAB91;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, #6A1B9A 100%);
+        }
+        
+        .time-slot {
+            transition: all 0.2s ease;
+        }
+        
+        .time-slot:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .time-slot:active {
+            transform: translateY(0);
+        }
+        
+        .selected-slot {
+            background-color: var(--accent) !important;
+            color: white !important;
+        }
+        
+        .booking-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        
+        .booking-container.open {
+            max-height: 500px;
+        }
+        
+        .checkmark-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        
+        .checkmark {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #fff;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            box-shadow: inset 0px 0px 0px var(--primary);
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+        
+        .checkmark-check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+        
+        @keyframes scale {
+            0%, 100% { transform: none; }
+            50% { transform: scale3d(1.1, 1.1, 1); }
+        }
+        
+        @keyframes fill {
+            100% { box-shadow: inset 0px 0px 0px 30px var(--primary); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="hero-gradient text-white shadow-lg">
+        <div class="container mx-auto px-4 py-8 md:py-12">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-1/2 mb-6 md:mb-0">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/55272acf-eb17-424f-98b9-4982c357ef06.png" alt="Mujer realizando ejercicio de pilates en estudio con equipamiento profesional, luz natural y ambiente acogedor" class="rounded-lg shadow-xl w-full max-w-md mx-auto">
+                </div>
+                <div class="md:w-1/2 text-center md:text-left">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Pilates Harmony</h1>
+                    <p class="text-xl md:text-2xl mb-6">Reserva tu clase con solo unos clicks</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <section id="reserva" class="bg-white rounded-lg shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Reserva tu turno</h2>
+            
+            <!-- Calendario -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Selecciona el día</h3>
+                <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-2">
+                    <!-- Días generados dinámicamente con JS -->
+                </div>
+            </div>
+            
+            <!-- Horarios -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Horarios disponibles</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 time-slots-container">
+                    <!-- Horarios generados dinámicamente con JS -->
+                </div>
+                <p class="text-gray-500 text-sm mt-3">* Horario laboral: Todos los días de 8:00 a 20:00</p>
+            </div>
+            
+            <!-- Formulario de reserva -->
+            <div id="bookingForm" class="booking-container bg-gray-50 p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Completa tus datos</h3>
+                <form id="reservaForm" class="space-y-4">
+                    <div>
+                        <label for="nombre" class="block text-gray-700 mb-2">Nombre completo</label>
+                        <input type="text" id="nombre" name="nombre" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label for="telefono" class="block text-gray-700 mb-2">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    
+                    <div id="resumenReserva" class="bg-white p-4 rounded-lg shadow-inner mb-4 hidden">
+                        <h4 class="font-semibold text-gray-700 mb-2">Resumen de tu reserva:</h4>
+                        <p id="resumenFecha" class="text-gray-600"></p>
+                        <p id="resumenHora" class="text-gray-600"></p>
+                    </div>
+                    
+                    <div class="flex justify-end gap-4">
+                        <button type="button" id="whatsappBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 flex items-center">
+                            Enviar reserva
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Confirmación -->
+            <div id="confirmacion" class="hidden text-center py-8">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">¡Reserva confirmada!</h3>
+                <p class="text-gray-600 mb-6">Hemos enviado los detalles de tu reserva a tu correo electrónico.</p>
+                <button id="nuevaReserva" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-300">Hacer otra reserva</button>
+            </div>
+        </section>
+        
+        <!-- Instrucciones -->
+        <section class="mt-12 bg-white rounded-lg shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Cómo funciona?</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mb-3">
+                        <span class="text-purple-800 font-bold text-xl">1</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-700 mb-2">Elige fecha y horario</h3>
+                    <p class="text-gray-600">Selecciona un día en el calendario y escoge entre los horarios disponibles.</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mb-3">
+                        <span class="text-purple-800 font-bold text-xl">2</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-700 mb-2">Completa tus datos</h3>
+                    <p class="text-gray-600">Ingresa tu información personal para que podamos contactarte.</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mb-3">
+                        <span class="text-purple-800 font-bold text-xl">3</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-700 mb-2">Confirmación</h3>
+                    <p class="text-gray-600">Recibirás un correo con los detalles de tu reserva.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold mb-2">Pilates Harmony</h2>
+                    <p class="text-gray-300">Transforma tu cuerpo y mente</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Contacto</h3>
+                    <p class="text-gray-300">info@pilatesharmony.com</p>
+                    <p class="text-gray-300">+54 11 1234-5678</p>
+                </div>
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-700 text-center text-gray-400">
+                <p>© 2023 Pilates Harmony. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const config = {
+                workingHours: { start: 8, end: 20 },
+                sessionDuration: 60,
+                weekends: true,
+                bookedSlots: []
+            };
+            
+            const calendarDays = document.querySelector('.grid.grid-cols-3');
+            const timeSlotsContainer = document.querySelector('.time-slots-container');
+            const bookingForm = document.getElementById('bookingForm');
+            const reservaForm = document.getElementById('reservaForm');
+            const confirmacion = document.getElementById('confirmacion');
+            const nuevaReservaBtn = document.getElementById('nuevaReserva');
+            const resumenFecha = document.getElementById('resumenFecha');
+            const resumenHora = document.getElementById('resumenHora');
+            let selectedDate = null;
+            let selectedTime = null;
+            
+            function generateCalendar() {
+                calendarDays.innerHTML = '';
+                const today = new Date();
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(currentYear, currentMonth, day);
+                    const isPast = date < today && date.getDate() !== today.getDate();
+                    const dayElement = document.createElement('button');
+                    dayElement.className = `py-2 rounded-lg text-center ${!isPast ? 'bg-white hover:bg-purple-100 text-gray-800' : 'bg-gray-100 text-gray-400 cursor-not-allowed'} ${day === today.getDate() ? 'border-2 border-purple-500' : ''}`;
+                    dayElement.textContent = day;
+                    dayElement.disabled = isPast;
+                    if (!isPast) dayElement.addEventListener('click', () => selectDate(date, day));
+                    calendarDays.appendChild(dayElement);
+                }
+            }
+            
+            function generateTimeSlots(date) {
+                timeSlotsContainer.innerHTML = '';
+                const today = new Date();
+                const isToday = date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+                const startHour = isToday ? Math.max(today.getHours() + 1, config.workingHours.start) : config.workingHours.start;
+                const endHour = config.workingHours.end;
+                for (let hour = startHour; hour < endHour; hour++) {
+                    const timeSlot = document.createElement('button');
+                    const timeText = `${hour.toString().padStart(2,'0')}:00`;
+                    const isBooked = config.bookedSlots.some(slot => slot.date === formatDate(date) && slot.time === timeText);
+                    timeSlot.className = `time-slot py-3 px-4 rounded-lg text-center ${isBooked ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white hover:bg-purple-100 text-gray-800 border border-gray-200'}`;
+                    timeSlot.textContent = timeText;
+                    timeSlot.disabled = isBooked;
+                    if (!isBooked) timeSlot.addEventListener('click', () => selectTimeSlot(timeSlot, timeText));
+                    timeSlotsContainer.appendChild(timeSlot);
+                }
+            }
+            
+            function formatDate(date) { return date.toISOString().split('T')[0]; }
+            
+            function selectDate(date, day) {
+                document.querySelectorAll('.grid button').forEach(btn => {
+                    btn.classList.remove('bg-purple-600', 'text-white');
+                    if (parseInt(btn.textContent) === day) btn.classList.add('bg-purple-600','text-white');
+                });
+                selectedDate = date;
+                generateTimeSlots(date);
+            }
+            
+            function selectTimeSlot(slot, time) {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected-slot'));
+                slot.classList.add('selected-slot');
+                selectedTime = time;
+                bookingForm.classList.add('open');
+                resumenFecha.textContent = `Día: ${selectedDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}`;
+                resumenHora.textContent = `Hora: ${selectedTime}`;
+                document.getElementById('resumenReserva').classList.remove('hidden');
+            }
+            
+            reservaForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                setTimeout(() => {
+                    bookingForm.classList.remove('open');
+                    confirmacion.classList.remove('hidden');
+                    const formData = new FormData(reservaForm);
+                    console.log('Reserva enviada:', {
+                        date: selectedDate,
+                        time: selectedTime,
+                        nombre: formData.get('nombre'),
+                        email: formData.get('email'),
+                        telefono: formData.get('telefono')
+                    });
+                    confirmacion.scrollIntoView({ behavior: 'smooth' });
+                }, 800);
+            });
+            
+            document.getElementById('whatsappBtn').addEventListener('click', function() {
+                const formData = new FormData(reservaForm);
+                const nombre = formData.get('nombre');
+                const telefono = formData.get('telefono');
+                const fecha = selectedDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+                const message = `*Nueva reserva Pilates Harmony*%0A%0A*Fecha:* ${fecha}%0A*Hora:* ${selectedTime}%0A*Nombre:* ${nombre}%0A*Teléfono:* ${telefono}`;
+                window.open(`https://wa.me/541112345678?text=${message}`, '_blank');
+            });
+
+            nuevaReservaBtn.addEventListener('click', function() {
+                confirmacion.classList.add('hidden');
+                selectedDate = null;
+                selectedTime = null;
+                reservaForm.reset();
+                document.querySelectorAll('.time-slot, .grid button').forEach(el => el.classList.remove('selected-slot','bg-purple-600','text-white'));
+                timeSlotsContainer.innerHTML = '';
+                document.getElementById('resumenReserva').classList.add('hidden');
+                document.getElementById('reserva').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            generateCalendar();
+        });
+    </script>
+</body>
+</html>
